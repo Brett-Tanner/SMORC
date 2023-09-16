@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import hero from "../images/hero.jpg";
 
 function Hero() {
@@ -29,16 +30,16 @@ function Hero() {
             <li>1. Red go face</li>
             <li>3. If go face, other player die</li>
             <li>4. Death best counterspell!</li>
-            <li>5. No intelyjense needed!!!</li>
+            <li>5. No intelliJense needed!!!</li>
           </ul>
         </div>
 
-        <a
-          href=""
+        <Link
+          to="/shop"
           className="bg-red-600 rounded-full text-stone-900 p-4 ml-[5vw]"
         >
           Buy SMORC
-        </a>
+        </Link>
       </div>
     </main>
   );

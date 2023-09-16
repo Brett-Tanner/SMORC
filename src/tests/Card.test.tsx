@@ -9,6 +9,7 @@ describe.todo("Card component", () => {
 
   it("increases amount in cart", () => {});
   it("decreases amount in cart", () => {});
+  it("amount in cart updates visually", () => {});
   it("displays total cost based on number in cart", () => {});
 
   it("uses flex-col in shop variant", () => {});
