@@ -1,13 +1,16 @@
 import { render, screen } from "@testing-library/react";
 import { describe, it, expect } from "vitest";
 import "@testing-library/jest-dom";
-import Nav from "../components/Nav";
 
-describe("shows cart size", () => {
-  it("displays the cartSize in a badge", () => {
-    render(<Nav cartSize={10} />);
+describe.todo("Card component", () => {
+  it("displays card art", () => {});
+  it("displays current amount in cart", () => {});
+  it("displays unit price", () => {});
 
-    const badge = screen.getByRole("button", { name: "10" });
-    expect(badge).toHaveTextContent("10");
-  });
+  it("increases amount in cart", () => {});
+  it("decreases amount in cart", () => {});
+  it("displays total cost based on number in cart", () => {});
+
+  it("uses flex-col in shop variant", () => {});
+  it("uses flex-row in cart variant", () => {});
 });
