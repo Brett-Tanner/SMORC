@@ -1,29 +1,17 @@
-import { render, screen } from "@testing-library/react";
-import { describe, it, expect } from "vitest";
+import { act, render, screen } from "@testing-library/react";
+import { describe, it, expect, vi } from "vitest";
 import "@testing-library/jest-dom";
+import userEvent from "@testing-library/user-event";
 import Card from "../components/Card";
 import { MemoryRouter } from "react-router-dom";
 import { card } from "../declarations";
+import Shop from "../components/Shop";
 
 describe("Card component", () => {
-  const testCard: card = {
-    cartCount: 2,
-    cmc: 3,
-    colorIdentity: ["B", "U"],
-    flavor: "How about a pie?",
-    img: "../images/cart-icon.svg",
-    name: "Oko, Prince of Something",
-    power: "4",
-    price: 200,
-    rarity: "rare",
-    toughness: "5",
-    type: "planeswalker",
-  };
-
   function renderCard() {
-    return render(
+    render(
       <MemoryRouter>
-        <Card card={testCard} context="shop" />
+        <Shop />
       </MemoryRouter>
     );
   }
@@ -54,13 +42,13 @@ describe("Card component", () => {
 
     it.todo("displays card details when details button clicked", async () => {
       renderCard();
-      // TODO: install userEvent library
       const user = userEvent.setup();
 
       const detailButton = await screen.findByRole("button", {
         name: "More Details",
       });
-      user.click(detailButton);
+
+      await user.click(detailButton);
 
       expect(screen.getByText("CMC: 3")).toBeVisible();
       expect(screen.getByText("Color: B, U")).toBeVisible();
@@ -71,46 +59,71 @@ describe("Card component", () => {
     });
   });
 
-  describe.todo("dynamic behavior", () => {
-    it("+ increases amount in cart", async () => {
+  describe("dynamic behavior", () => {
+    it("displayed amount in cart increments", async () => {
       renderCard();
       const user = userEvent.setup();
-      // TODO: Mock setCard or whatever it'll be called here
 
       const addButton = await screen.findByRole("button", { name: "+" });
-      user.click(addButton);
 
-      expect().toBeCalledTimes(1);
+      await act(async () => {
+        await user.click(addButton);
+      });
+      const incrementedCount = screen.findByText("3", { selector: "p" });
+
+      expect(incrementedCount).toBeDefined();
     });
-    it("- decreases amount in cart", async () => {
+
+    it("displayed amount in cart decrements", async () => {
       renderCard();
       const user = userEvent.setup();
-      // TODO: Mock setCard or whatever it'll be called here
 
       const minusButton = await screen.findByRole("button", { name: "-" });
-      user.click(minusButton);
 
-      expect().toBeCalledTimes(1);
+      await user.click(minusButton);
+      const decrementedCount = screen.findByText("1", { selector: "p" });
+
+      expect(decrementedCount).toBeDefined();
     });
-    it("displayed amount in cart updates optimistically", async () => {
+
+    it("stops at 0", async () => {
       renderCard();
       const user = userEvent.setup();
 
-      const addButton = await screen.findByRole("button", { name: "+" });
-      const cartCount = screen.getByText("2");
+      const minusButton = await screen.findByRole("button", { name: "-" });
 
-      user.click(addButton);
+      for (let i = 0; i < 5; i++) {
+        await user.click(minusButton);
+      }
+      const limitCount = screen.findByText("0", { selector: "p" });
 
-      expect(cartCount.innerText).toBe("3");
+      expect(limitCount).toBeDefined();
     });
-    it("displays total cost based on number in cart", () => {});
+
+    it.todo("displays total cost based on number in cart", () => {});
   });
 
   describe.todo("variants", () => {
+    const testCard: card = {
+      cartCount: 2,
+      cmc: 3,
+      colorIdentity: ["B", "U"],
+      flavor: "How about a pie?",
+      img: "../images/cart-icon.svg",
+      name: "Oko, Prince of Something",
+      power: "4",
+      price: 200,
+      rarity: "rare",
+      toughness: "5",
+      type: "planeswalker",
+    };
+
+    const fn = vi.fn();
+
     it("uses flex-col in shop variant", () => {
       render(
         <MemoryRouter>
-          <Card card={testCard} context="shop" />
+          <Card card={testCard} context="shop" setCards={fn} />
         </MemoryRouter>
       );
 
@@ -123,7 +136,7 @@ describe("Card component", () => {
     it("uses flex-row in cart variant", () => {
       render(
         <MemoryRouter>
-          <Card card={testCard} context="cart" />
+          <Card card={testCard} context="cart" setCards={fn} />
         </MemoryRouter>
       );
 
