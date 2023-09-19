@@ -5,19 +5,34 @@ import userEvent from "@testing-library/user-event";
 import Card from "../components/Card";
 import { MemoryRouter } from "react-router-dom";
 import { card } from "../declarations";
-import Shop from "../components/Shop";
 
 describe("Card component", () => {
+  const testCard: card = {
+    cartCount: 2,
+    cmc: 3,
+    colorIdentity: ["B", "U"],
+    flavor: "How about a pie?",
+    img: "../images/cart-icon.svg",
+    name: "Oko, Prince of Something",
+    power: "4",
+    price: 200,
+    rarity: "rare",
+    toughness: "5",
+    type: "planeswalker",
+  };
+
+  const fn = vi.fn();
+
   function renderCard() {
     render(
       <MemoryRouter>
-        <Shop />
+        <Card card={testCard} context="shop" setCards={fn} />
       </MemoryRouter>
     );
   }
 
   describe("initial view", () => {
-    it("displays card art, number in cart, unit price", async () => {
+    it("displays card art, number in cart, unit price, total price", async () => {
       renderCard();
 
       const displayedCard = await screen.findByRole("article");
@@ -27,7 +42,8 @@ describe("Card component", () => {
 
       expect(displayedCard).toContainElement(image);
       expect(displayedCard).toHaveTextContent("2");
-      expect(displayedCard).toHaveTextContent("200");
+      expect(displayedCard).toHaveTextContent("Unit Price: $200");
+      expect(displayedCard).toHaveTextContent("Total Price: $400");
     });
 
     it("displays the passed image", async () => {
@@ -95,31 +111,13 @@ describe("Card component", () => {
       for (let i = 0; i < 5; i++) {
         await user.click(minusButton);
       }
-      const limitCount = screen.findByText("0", { selector: "p" });
+      const lowerLimit = screen.findByText("0", { selector: "p" });
 
-      expect(limitCount).toBeDefined();
+      expect(lowerLimit).toBeDefined();
     });
-
-    it.todo("displays total cost based on number in cart", () => {});
   });
 
-  describe.todo("variants", () => {
-    const testCard: card = {
-      cartCount: 2,
-      cmc: 3,
-      colorIdentity: ["B", "U"],
-      flavor: "How about a pie?",
-      img: "../images/cart-icon.svg",
-      name: "Oko, Prince of Something",
-      power: "4",
-      price: 200,
-      rarity: "rare",
-      toughness: "5",
-      type: "planeswalker",
-    };
-
-    const fn = vi.fn();
-
+  describe("variants", () => {
     it("uses flex-col in shop variant", () => {
       render(
         <MemoryRouter>
@@ -127,12 +125,11 @@ describe("Card component", () => {
         </MemoryRouter>
       );
 
-      const displayedCard = screen.getByRole("article", {
-        name: "Oko, Prince of Something",
-      });
+      const displayedCard = screen.getByRole("article");
 
       expect(displayedCard).toHaveClass("flex");
     });
+
     it("uses flex-row in cart variant", () => {
       render(
         <MemoryRouter>
@@ -140,9 +137,7 @@ describe("Card component", () => {
         </MemoryRouter>
       );
 
-      const displayedCard = screen.getByRole("article", {
-        name: "Oko, Prince of Something",
-      });
+      const displayedCard = screen.getByRole("article");
 
       expect(displayedCard).toHaveClass("flex-col");
     });

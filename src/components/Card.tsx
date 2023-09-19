@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { card } from "../declarations";
 
 interface props {
@@ -7,6 +8,8 @@ interface props {
 }
 
 function Card({ card, context, setCards }: props) {
+  const [side, setSide] = useState<"front" | "back">("front");
+
   const handleIncrement = () => {
     setCards((cards) => {
       return cards.map((stateCard) => {
@@ -34,7 +37,7 @@ function Card({ card, context, setCards }: props) {
   };
 
   return (
-    <article className={context === "cart" ? "flex-col" : ""}>
+    <article className={context === "cart" ? "flex-col" : "flex"}>
       <div className="cardFace bg-stone-500 transition-transform">
         <h2>{card.name}</h2>
         <img src={card.img} alt={card.name} />
@@ -48,9 +51,12 @@ function Card({ card, context, setCards }: props) {
               +
             </button>
           </div>
-          <p>{card.price}</p>
+          <p>Unit Price: ${card.price}</p>
+          <p>Total Price: ${card.price * card.cartCount}</p>
         </div>
-        <button type="button">More Details</button>
+        <button type="button" onClick={() => setSide("back")}>
+          More Details
+        </button>
       </div>
       <div className="cardFace bg-stone-500 rotate-flip transition-transform">
         <p>CMC: {card.cmc}</p>
@@ -59,6 +65,9 @@ function Card({ card, context, setCards }: props) {
         <p>Stats: {card.power + "/" + card.toughness}</p>
         <p>Rarity: {card.rarity}</p>
         <p>Type: {card.type}</p>
+        <button type="button" onClick={() => setSide("front")}>
+          Key Info
+        </button>
       </div>
     </article>
   );

@@ -8,21 +8,7 @@ function Shop() {
   const cartCards = cards.filter((card) => card.cartCount > 0);
 
   useEffect(() => {
-    setCards([
-      {
-        cartCount: 2,
-        cmc: 3,
-        colorIdentity: ["B", "U"],
-        flavor: "How about a pie?",
-        img: "../images/cart-icon.svg",
-        name: "Oko, Prince of Something",
-        power: "4",
-        price: 200,
-        rarity: "rare",
-        toughness: "5",
-        type: "planeswalker",
-      },
-    ]);
+    setCards([]);
   }, []);
 
   return (
