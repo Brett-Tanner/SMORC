@@ -9,14 +9,12 @@ interface props {
 
 function Card({ card, context, setCards }: props) {
   const [side, setSide] = useState<"front" | "back">("front");
-  const articleClasses =
-    "p-3 rounded-xl bg-stone-700 text-center text-neutral-400";
-  const commonClasses =
-    "gap-2 justify-center items-center transition-transform";
-  const classes =
-    context === "shop"
-      ? commonClasses + " flex flex-col"
-      : commonClasses + " flex";
+  const articleClasses = `p-3 rounded-xl bg-stone-700 text-center text-neutral-400${
+    context === "cart" ? " md:w-3/4" : ""
+  }`;
+  const classes = `flex gap-2 justify-center items-center ${
+    context === "cart" ? "gap-5" : " flex-col"
+  }`;
 
   const handleIncrement = () => {
     setCards((cards) => {
@@ -44,6 +42,7 @@ function Card({ card, context, setCards }: props) {
     });
   };
 
+  // TODO: if in cart context, render a remove from cart button instead
   if (side === "front") {
     return (
       <article className={articleClasses}>
@@ -72,7 +71,9 @@ function Card({ card, context, setCards }: props) {
           <button
             type="button"
             onClick={() => setSide("back")}
-            className="bg-stone-600 hover:bg-stone-500 rounded w-1/2"
+            className={`bg-stone-600 hover:bg-stone-500 rounded ${
+              context === "cart" ? " basis-2/12" : " w-1/2"
+            }`}
           >
             More Details
           </button>
@@ -93,7 +94,9 @@ function Card({ card, context, setCards }: props) {
           <button
             type="button"
             onClick={() => setSide("front")}
-            className="bg-stone-600 hover:bg-stone-500 rounded w-1/2"
+            className={`bg-stone-600 hover:bg-stone-500 rounded ${
+              context === "cart" ? " basis-2/12" : " w-1/2"
+            }`}
           >
             Key Info
           </button>

@@ -4,7 +4,7 @@ import Hero from "./components/Hero";
 function App() {
   return (
     <>
-      <Nav cartSize={0} />
+      <Nav />
       <Hero />
     </>
   );

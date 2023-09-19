@@ -73,6 +73,7 @@ describe("Card component", () => {
   });
 
   describe("dynamic behavior", () => {
+    // TODO: pass increment, decrement and remove from cart as props and mock
     it("displayed amount in cart increments", async () => {
       const fn = renderCard();
       const user = userEvent.setup();
@@ -114,6 +115,23 @@ describe("Card component", () => {
       await user.click(minusButton);
 
       expect(fn).toBeCalledTimes(0);
+    });
+
+    it.todo("can remove from cart in cart variant", async () => {
+      const fn = vi.fn();
+      render(
+        <MemoryRouter>
+          <Card card={testCard} context="cart" setCards={fn} />
+        </MemoryRouter>
+      );
+
+      const user = userEvent.setup();
+      const removeButton = await screen.findByRole("button", {
+        name: "Remove from Cart",
+      });
+      await user.click(removeButton);
+
+      expect(fn).toBeCalledTimes(1);
     });
   });
 
