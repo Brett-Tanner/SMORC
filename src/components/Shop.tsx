@@ -7,15 +7,32 @@ function Shop() {
   const [cards, setCards] = useState<card[]>([]);
   const cartCards = cards.filter((card) => card.cartCount > 0);
 
+  // TODO: replace with API logic once done with styling
   useEffect(() => {
-    setCards([]);
+    const fakeCards = [];
+    for (let i = 0; i < 10; i++) {
+      fakeCards.push({
+        cartCount: 2,
+        cmc: 3,
+        colorIdentity: ["B", "U"],
+        flavor: "How about a pie?",
+        img: "../images/cart-icon.svg",
+        name: "Oko, Prince of Something",
+        power: "4",
+        price: 200,
+        rarity: "rare",
+        toughness: "5",
+        type: "planeswalker",
+      });
+    }
+    setCards(fakeCards);
   }, []);
 
   return (
     <>
       <Nav cartSize={cartCards.length} />
-      <main className="mt-[10dvh]">
-        <h1 className="font-death text-red-600 text-3xl">
+      <main className="mt-[10dvh] grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 justify-items-stretch gap-3 p-3">
+        <h1 className="font-death text-red-600 text-3xl col-span-full text-center">
           RED LIKE BLOOD OF ENEMY
         </h1>
         {cards.map((card) => {

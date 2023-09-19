@@ -9,6 +9,9 @@ interface props {
 
 function Card({ card, context, setCards }: props) {
   const [side, setSide] = useState<"front" | "back">("front");
+  const commonClasses = "transition-transform";
+  const classes =
+    context === "shop" ? commonClasses + " flex-col" : commonClasses + " flex";
 
   const handleIncrement = () => {
     setCards((cards) => {
@@ -23,7 +26,7 @@ function Card({ card, context, setCards }: props) {
   };
 
   const handleDecrement = () => {
-    if (card.cartCount <= 0) return;
+    if (card.cartCount <= 0) return false;
 
     setCards((cards) => {
       return cards.map((stateCard) => {
@@ -36,41 +39,49 @@ function Card({ card, context, setCards }: props) {
     });
   };
 
-  return (
-    <article className={context === "cart" ? "flex-col" : "flex"}>
-      <div className="cardFace bg-stone-500 transition-transform">
-        <h2>{card.name}</h2>
-        <img src={card.img} alt={card.name} />
-        <div>
+  if (side === "front") {
+    return (
+      <article className="p-3 rounded-xl bg-stone-500">
+        <div title="cardFace" className={"cardFace " + classes}>
+          <h2>{card.name}</h2>
+          <img src={card.img} alt={card.name} />
           <div>
-            <button type="button" onClick={handleDecrement}>
-              -
-            </button>
-            <p>{card.cartCount}</p>
-            <button type="button" onClick={handleIncrement}>
-              +
-            </button>
+            <div>
+              <button type="button" onClick={handleDecrement}>
+                -
+              </button>
+              <p>{card.cartCount}</p>
+              <button type="button" onClick={handleIncrement}>
+                +
+              </button>
+            </div>
+            <p>Unit Price: ${card.price}</p>
+            <p>Total Price: ${card.price * card.cartCount}</p>
           </div>
-          <p>Unit Price: ${card.price}</p>
-          <p>Total Price: ${card.price * card.cartCount}</p>
+          <button type="button" onClick={() => setSide("back")}>
+            More Details
+          </button>
         </div>
-        <button type="button" onClick={() => setSide("back")}>
-          More Details
-        </button>
-      </div>
-      <div className="cardFace bg-stone-500 rotate-flip transition-transform">
-        <p>CMC: {card.cmc}</p>
-        <p>Color: {card.colorIdentity.join(", ")}</p>
-        <p>{card.flavor}</p>
-        <p>Stats: {card.power + "/" + card.toughness}</p>
-        <p>Rarity: {card.rarity}</p>
-        <p>Type: {card.type}</p>
-        <button type="button" onClick={() => setSide("front")}>
-          Key Info
-        </button>
-      </div>
-    </article>
-  );
+      </article>
+    );
+  } else {
+    return (
+      <article className="p-3 rounded-xl bg-stone-500">
+        <div title="cardBack" className={"cardBack " + classes}>
+          <h2>{card.name}</h2>
+          <p>CMC: {card.cmc}</p>
+          <p>Color: {card.colorIdentity.join(", ")}</p>
+          <p>{card.flavor}</p>
+          <p>Stats: {card.power + "/" + card.toughness}</p>
+          <p>Rarity: {card.rarity}</p>
+          <p>Type: {card.type}</p>
+          <button type="button" onClick={() => setSide("front")}>
+            Key Info
+          </button>
+        </div>
+      </article>
+    );
+  }
 }
 
 export default Card;

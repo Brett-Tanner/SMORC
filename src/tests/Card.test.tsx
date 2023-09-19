@@ -21,14 +21,14 @@ describe("Card component", () => {
     type: "planeswalker",
   };
 
-  const fn = vi.fn();
-
   function renderCard() {
+    const fn = vi.fn();
     render(
       <MemoryRouter>
         <Card card={testCard} context="shop" setCards={fn} />
       </MemoryRouter>
     );
+    return fn;
   }
 
   describe("initial view", () => {
@@ -56,7 +56,7 @@ describe("Card component", () => {
       expect(image).toHaveAttribute("src", "../images/cart-icon.svg");
     });
 
-    it.todo("displays card details when details button clicked", async () => {
+    it("displays card details when details button clicked", async () => {
       renderCard();
       const user = userEvent.setup();
 
@@ -64,20 +64,17 @@ describe("Card component", () => {
         name: "More Details",
       });
 
-      await user.click(detailButton);
+      await act(async () => {
+        await user.click(detailButton);
+      });
 
-      expect(screen.getByText("CMC: 3")).toBeVisible();
-      expect(screen.getByText("Color: B, U")).toBeVisible();
-      expect(screen.getByText("How about a pie?")).toBeVisible();
-      expect(screen.getByText("Stats: 4/5")).toBeVisible();
-      expect(screen.getByText("Rarity: Rare")).toBeVisible();
-      expect(screen.getByText("Type: Planeswalker")).toBeVisible();
+      expect(screen.getByTitle("cardBack")).toBeVisible();
     });
   });
 
   describe("dynamic behavior", () => {
     it("displayed amount in cart increments", async () => {
-      renderCard();
+      const fn = renderCard();
       const user = userEvent.setup();
 
       const addButton = await screen.findByRole("button", { name: "+" });
@@ -85,39 +82,44 @@ describe("Card component", () => {
       await act(async () => {
         await user.click(addButton);
       });
-      const incrementedCount = screen.findByText("3", { selector: "p" });
 
-      expect(incrementedCount).toBeDefined();
+      expect(fn).toBeCalledTimes(1);
     });
 
     it("displayed amount in cart decrements", async () => {
-      renderCard();
+      const fn = renderCard();
       const user = userEvent.setup();
 
       const minusButton = await screen.findByRole("button", { name: "-" });
 
       await user.click(minusButton);
-      const decrementedCount = screen.findByText("1", { selector: "p" });
 
-      expect(decrementedCount).toBeDefined();
+      expect(fn).toBeCalledTimes(1);
     });
 
     it("stops at 0", async () => {
-      renderCard();
+      const fn = vi.fn();
+      render(
+        <MemoryRouter>
+          <Card
+            card={{ ...testCard, cartCount: 0 }}
+            context="shop"
+            setCards={fn}
+          />
+        </MemoryRouter>
+      );
+
       const user = userEvent.setup();
-
       const minusButton = await screen.findByRole("button", { name: "-" });
+      await user.click(minusButton);
 
-      for (let i = 0; i < 5; i++) {
-        await user.click(minusButton);
-      }
-      const lowerLimit = screen.findByText("0", { selector: "p" });
-
-      expect(lowerLimit).toBeDefined();
+      expect(fn).toBeCalledTimes(0);
     });
   });
 
   describe("variants", () => {
+    const fn = vi.fn();
+
     it("uses flex-col in shop variant", () => {
       render(
         <MemoryRouter>
@@ -125,9 +127,9 @@ describe("Card component", () => {
         </MemoryRouter>
       );
 
-      const displayedCard = screen.getByRole("article");
+      const displayedCard = screen.getByTitle("cardFace");
 
-      expect(displayedCard).toHaveClass("flex");
+      expect(displayedCard).toHaveClass("flex-col");
     });
 
     it("uses flex-row in cart variant", () => {
@@ -137,9 +139,9 @@ describe("Card component", () => {
         </MemoryRouter>
       );
 
-      const displayedCard = screen.getByRole("article");
+      const displayedCard = screen.getByTitle("cardFace");
 
-      expect(displayedCard).toHaveClass("flex-col");
+      expect(displayedCard).toHaveClass("flex");
     });
   });
 });
