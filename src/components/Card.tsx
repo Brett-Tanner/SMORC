@@ -9,9 +9,14 @@ interface props {
 
 function Card({ card, context, setCards }: props) {
   const [side, setSide] = useState<"front" | "back">("front");
-  const commonClasses = "transition-transform";
+  const articleClasses =
+    "p-3 rounded-xl bg-stone-700 text-center text-neutral-400";
+  const commonClasses =
+    "gap-2 justify-center items-center transition-transform";
   const classes =
-    context === "shop" ? commonClasses + " flex-col" : commonClasses + " flex";
+    context === "shop"
+      ? commonClasses + " flex flex-col"
+      : commonClasses + " flex";
 
   const handleIncrement = () => {
     setCards((cards) => {
@@ -41,24 +46,34 @@ function Card({ card, context, setCards }: props) {
 
   if (side === "front") {
     return (
-      <article className="p-3 rounded-xl bg-stone-500">
+      <article className={articleClasses}>
         <div title="cardFace" className={"cardFace " + classes}>
-          <h2>{card.name}</h2>
+          <h2 className="font-bold text-xl">{card.name}</h2>
           <img src={card.img} alt={card.name} />
-          <div>
-            <div>
-              <button type="button" onClick={handleDecrement}>
-                -
-              </button>
-              <p>{card.cartCount}</p>
-              <button type="button" onClick={handleIncrement}>
-                +
-              </button>
-            </div>
-            <p>Unit Price: ${card.price}</p>
-            <p>Total Price: ${card.price * card.cartCount}</p>
+          <div className="flex justify-center items-center">
+            <button
+              type="button"
+              onClick={handleDecrement}
+              className="bg-stone-600 p-1 rounded-s-md hover:bg-stone-500"
+            >
+              -
+            </button>
+            <p className="bg-stone-400 p-1 text-red-800">{card.cartCount}</p>
+            <button
+              type="button"
+              onClick={handleIncrement}
+              className="bg-stone-600 p-1 rounded-e-md hover:bg-stone-500"
+            >
+              +
+            </button>
           </div>
-          <button type="button" onClick={() => setSide("back")}>
+          <p>Unit Price: ${card.price}</p>
+          <p>Total Price: ${card.price * card.cartCount}</p>
+          <button
+            type="button"
+            onClick={() => setSide("back")}
+            className="bg-stone-600 hover:bg-stone-500 rounded w-1/2"
+          >
             More Details
           </button>
         </div>
@@ -66,22 +81,30 @@ function Card({ card, context, setCards }: props) {
     );
   } else {
     return (
-      <article className="p-3 rounded-xl bg-stone-500">
+      <article className={articleClasses}>
         <div title="cardBack" className={"cardBack " + classes}>
-          <h2>{card.name}</h2>
+          <h2 className="font-bold text-xl">{card.name}</h2>
+          <p className="italic">{card.flavor}</p>
           <p>CMC: {card.cmc}</p>
           <p>Color: {card.colorIdentity.join(", ")}</p>
-          <p>{card.flavor}</p>
           <p>Stats: {card.power + "/" + card.toughness}</p>
-          <p>Rarity: {card.rarity}</p>
-          <p>Type: {card.type}</p>
-          <button type="button" onClick={() => setSide("front")}>
+          <p>Rarity: {capitalize(card.rarity)}</p>
+          <p>Type: {capitalize(card.type)}</p>
+          <button
+            type="button"
+            onClick={() => setSide("front")}
+            className="bg-stone-600 hover:bg-stone-500 rounded w-1/2"
+          >
             Key Info
           </button>
         </div>
       </article>
     );
   }
+}
+
+function capitalize(string: string) {
+  return string[0].toUpperCase() + string.slice(1);
 }
 
 export default Card;
