@@ -3,10 +3,16 @@ import { useEffect, useState } from "react";
 import { card } from "../declarations";
 import { apiCard, response } from "../api";
 import Card from "./Card";
+import LoadingState from "./LoadingState";
 
 function Shop() {
   const [cards, setCards] = useState<card[]>([]);
+  const [loading, setLoading] = useState(true);
   const cartCards = cards.filter((card) => card.cartCount > 0);
+  const mainClasses =
+    "mt-[10dvh] h-[90vh] overflow-scroll grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 justify-items-stretch gap-3 p-3";
+
+  console.log(loading);
 
   useEffect(() => {
     setCards([]);
@@ -32,6 +38,13 @@ function Shop() {
         };
         return newCard;
       });
+
+      return apiCards;
+    }
+
+    async function processCards() {
+      const apiCards = await getCards();
+
       const deDuped: card[] = apiCards.filter((card: card) => {
         return (
           card.img !== undefined &&
@@ -40,34 +53,52 @@ function Shop() {
       });
 
       setCards(deDuped);
+      setLoading(false);
     }
 
-    getCards();
+    processCards();
   }, []);
 
-  return (
-    <>
-      <Nav
-        cart={cartCards.filter((card) => card.cartCount > 0)}
-        setCards={setCards}
-      />
-      <main className="mt-[10dvh] h-[90vh] overflow-scroll grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 justify-items-stretch gap-3 p-3">
-        <h1 className="font-death text-red-600 text-3xl col-span-full text-center">
-          RED LIKE BLOOD OF ENEMY
-        </h1>
-        {cards.map((card) => {
-          return (
-            <Card
-              key={card.id}
-              card={card}
-              context="shop"
-              setCards={setCards}
-            />
-          );
-        })}
-      </main>
-    </>
-  );
+  if (loading) {
+    return (
+      <>
+        <Nav
+          cart={cartCards.filter((card) => card.cartCount > 0)}
+          setCards={setCards}
+        />
+        <main className={mainClasses}>
+          <h1 className="font-death text-red-600 text-3xl col-span-full text-center">
+            RED LIKE BLOOD OF ENEMY
+          </h1>
+          <LoadingState />
+        </main>
+      </>
+    );
+  } else {
+    return (
+      <>
+        <Nav
+          cart={cartCards.filter((card) => card.cartCount > 0)}
+          setCards={setCards}
+        />
+        <main className={mainClasses}>
+          <h1 className="font-death text-red-600 text-3xl col-span-full text-center">
+            RED LIKE BLOOD OF ENEMY
+          </h1>
+          {cards.map((card) => {
+            return (
+              <Card
+                key={card.id}
+                card={card}
+                context="shop"
+                setCards={setCards}
+              />
+            );
+          })}
+        </main>
+      </>
+    );
+  }
 }
 
 export default Shop;

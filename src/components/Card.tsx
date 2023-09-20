@@ -48,7 +48,7 @@ function Card({ card, context, setCards }: props) {
       <article className={articleClasses}>
         <div title="cardFace" className={"cardFace " + classes}>
           <h2 className="font-bold text-xl">{card.name}</h2>
-          <img src={card.img} alt={card.name} />
+          <img src={card.img} alt={card.name} className="rounded-xl" />
           <div className="flex justify-center items-center">
             <button
               type="button"
