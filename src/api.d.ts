@@ -1,15 +1,17 @@
-interface card {
-  cartCount: number;
+interface apiCard {
   cmc: number;
   flavor: string;
   id: string;
-  img: string;
+  imageUrl: string;
   name: string;
   power: string;
-  price: number;
   rarity: string;
   toughness: string;
   type: string;
 }
 
-export { card };
+interface response {
+  cards: apiCard[];
+}
+
+export { apiCard, response };

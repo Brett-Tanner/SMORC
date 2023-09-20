@@ -12,7 +12,7 @@ function Card({ card, context, setCards }: props) {
   const articleClasses = `p-3 rounded-xl bg-stone-700 text-center text-neutral-400${
     context === "cart" ? " md:w-3/4" : ""
   }`;
-  const classes = `flex gap-2 justify-center items-center ${
+  const classes = `flex gap-2 justify-center items-center h-full ${
     context === "cart" ? "gap-5" : " flex-col"
   }`;
 
@@ -84,13 +84,14 @@ function Card({ card, context, setCards }: props) {
     return (
       <article className={articleClasses}>
         <div title="cardBack" className={"cardBack " + classes}>
-          <h2 className="font-bold text-xl">{card.name}</h2>
-          <p className="italic">{card.flavor}</p>
-          <p>CMC: {card.cmc}</p>
-          <p>Color: {card.colorIdentity.join(", ")}</p>
-          <p>Stats: {card.power + "/" + card.toughness}</p>
-          <p>Rarity: {capitalize(card.rarity)}</p>
-          <p>Type: {capitalize(card.type)}</p>
+          <div className="flex flex-col flex-grow">
+            <h2 className="font-bold text-xl">{card.name}</h2>
+            <p className="italic">{card.flavor}</p>
+            <p>CMC: {card.cmc}</p>
+            <p>Stats: {card.power + "/" + card.toughness}</p>
+            <p>Rarity: {capitalize(card.rarity)}</p>
+            <p>Type: {capitalize(card.type)}</p>
+          </div>
           <button
             type="button"
             onClick={() => setSide("front")}
