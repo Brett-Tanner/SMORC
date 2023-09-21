@@ -12,8 +12,6 @@ function Shop() {
   const mainClasses =
     "mt-[10dvh] h-[90vh] overflow-scroll grid grid-cols-1 sm:grid-cols-3 lg:grid-cols-5 justify-items-stretch gap-3 p-3";
 
-  console.log(loading);
-
   useEffect(() => {
     setCards([]);
 
