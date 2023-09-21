@@ -16,18 +16,6 @@ function Card({ card, context, setCards }: props) {
     context === "cart" ? "gap-5" : " flex-col"
   }`;
 
-  const handleIncrement = () => {
-    setCards((cards) => {
-      return cards.map((stateCard) => {
-        if (stateCard.name === card.name) {
-          return { ...stateCard, cartCount: card.cartCount + 1 };
-        } else {
-          return { ...stateCard };
-        }
-      });
-    });
-  };
-
   const handleDecrement = () => {
     if (card.cartCount <= 0) return false;
 
@@ -42,7 +30,30 @@ function Card({ card, context, setCards }: props) {
     });
   };
 
-  // TODO: if in cart context, render a remove from cart button instead
+  const handleIncrement = () => {
+    setCards((cards) => {
+      return cards.map((stateCard) => {
+        if (stateCard.name === card.name) {
+          return { ...stateCard, cartCount: card.cartCount + 1 };
+        } else {
+          return { ...stateCard };
+        }
+      });
+    });
+  };
+
+  const handleRemove = () => {
+    setCards((cards) => {
+      return cards.map((stateCard) => {
+        if (stateCard.name === card.name) {
+          return { ...stateCard, cartCount: 0 };
+        } else {
+          return { ...stateCard };
+        }
+      });
+    });
+  };
+
   if (side === "front") {
     return (
       <article className={articleClasses}>
@@ -68,15 +79,23 @@ function Card({ card, context, setCards }: props) {
           </div>
           <p>Unit Price: ${card.price}</p>
           <p>Total Price: ${card.price * card.cartCount}</p>
-          <button
-            type="button"
-            onClick={() => setSide("back")}
-            className={`bg-stone-600 hover:bg-stone-500 rounded ${
-              context === "cart" ? " basis-2/12" : " w-1/2"
-            }`}
-          >
-            More Details
-          </button>
+          {context === "cart" ? (
+            <button
+              type="button"
+              className="bg-stone-600 hover:bg-stone-500 rounded basis-2/12"
+              onClick={handleRemove}
+            >
+              Remove
+            </button>
+          ) : (
+            <button
+              type="button"
+              onClick={() => setSide("back")}
+              className={`bg-stone-600 hover:bg-stone-500 rounded w-1/2`}
+            >
+              More Details
+            </button>
+          )}
         </div>
       </article>
     );
